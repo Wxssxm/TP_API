@@ -19,7 +19,7 @@ mongoose.connect('mongodb://localhost:27017/albumdb')
 
 app.use('/api', albumRoutes);
 app.use('/api', photoRoutes);
-// 🚀 Lancement du serveur
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(` Serveur lancé sur http://localhost:${PORT}`);
