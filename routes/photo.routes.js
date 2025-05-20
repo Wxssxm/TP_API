@@ -1,10 +1,12 @@
+const verifyToken = require('../middlewares/verifyToken');
+const validatePhoto = require('../middlewares/validatePhoto');
 const express = require('express');
 const router = express.Router();
 const Photo = require('../models/Photo');
 const Album = require('../models/Album');
 
-// POST /album/:idalbum/photo – Ajouter une photo à un album
-router.post('/album/:idalbum/photo', async (req, res) => {
+
+router.post('/album/:idalbum/photo', verifyToken, validatePhoto, async (req, res) => {
   try {
     const album = await Album.findById(req.params.idalbum);
     if (!album) return res.status(404).json({ message: 'Album non trouvé' });
@@ -25,7 +27,7 @@ router.post('/album/:idalbum/photo', async (req, res) => {
   }
 });
 
-// GET /album/:idalbum/photos – Liste des photos d’un album
+
 router.get('/album/:idalbum/photos', async (req, res) => {
   try {
     const photos = await Photo.find({ album: req.params.idalbum });
@@ -35,7 +37,6 @@ router.get('/album/:idalbum/photos', async (req, res) => {
   }
 });
 
-// GET /album/:idalbum/photo/:idphotos – Une photo spécifique
 router.get('/album/:idalbum/photo/:idphotos', async (req, res) => {
   try {
     const photo = await Photo.findOne({
@@ -50,8 +51,8 @@ router.get('/album/:idalbum/photo/:idphotos', async (req, res) => {
   }
 });
 
-// PUT /album/:idalbum/photo/:idphotos – Modifier une photo
-router.put('/album/:idalbum/photo/:idphotos', async (req, res) => {
+
+router.put('/album/:idalbum/photo/:idphotos', verifyToken, validatePhoto, async (req, res) => {
   try {
     const photo = await Photo.findOneAndUpdate(
       { _id: req.params.idphotos, album: req.params.idalbum },
@@ -66,8 +67,7 @@ router.put('/album/:idalbum/photo/:idphotos', async (req, res) => {
   }
 });
 
-// DELETE /album/:idalbum/photo/:idphotos – Supprimer une photo
-router.delete('/album/:idalbum/photo/:idphotos', async (req, res) => {
+router.delete('/album/:idalbum/photo/:idphotos', verifyToken, async (req, res) => {
   try {
     const photo = await Photo.findOneAndDelete({
       _id: req.params.idphotos,
